@@ -1,42 +1,43 @@
+import authConfig from '@/auth/config';
 import NextAuth from 'next-auth';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
 import { db } from '@/db/schema';
 import GitHub from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
-import { signInSchema } from '@/auth/validation/zod';
-import { ZodError } from 'zod';
+import type { Provider } from 'next-auth/providers';
+
+const providers: Provider[] = [
+  Credentials({
+    credentials: { password: { label: 'Password', type: 'password' } },
+    authorize(c) {
+      if (c.password !== 'password') return null;
+      return {
+        id: 'test',
+        name: 'Test User',
+        email: 'test@example.com',
+      };
+    },
+  }),
+  GitHub,
+];
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: DrizzleAdapter(db),
-  providers: [
-    GitHub,
-    // Credentials({
-    //   credentials: {
-    //     email: {},
-    //     password: {},
-    //   },
-    //   authorize: async (credentials) => {
-    //     try {
-    //       let user = null
-
-    //       const { email, password } = await signInSchema.parseAsync(credentials)
-
-    //       // const pwHash = saltAndHashPassword(password)
-
-    //       // user = await getUserFromDb(email, pwHash)
-
-    //       // if (!user) {
-    //       //   throw new Error("Invalid credentials.")
-    //       // }
-
-    //       // return user
-    //       return { email, password }
-    //     } catch (error) {
-    //       if (error instanceof ZodError) {
-    //         return null
-    //       }
-    //     }
-    //   },
-    // }),
-  ],
+  session: { strategy: 'jwt' },
+  pages: {
+    signIn: '/login',
+  },
+  ...authConfig,
+  providers,
 });
+
+export const providerMap = providers
+  .map((provider) => {
+    if (typeof provider === 'function') {
+      const providerData = provider();
+      return { id: providerData.id, name: providerData.name };
+    } else {
+      return { id: provider.id, name: provider.name };
+    }
+  })
+  .filter((provider) => provider.id !== 'credentials');
