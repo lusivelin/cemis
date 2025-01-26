@@ -1,42 +1,29 @@
 import NextAuth from 'next-auth';
-import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import { db } from '@/db/schema';
-import GitHub from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
-import { signInSchema } from '@/auth/validation/zod';
-import { ZodError } from 'zod';
+import GitHub from 'next-auth/providers/github';
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db),
+export const {
+  handlers: { GET, POST },
+  auth,
+  signIn,
+  signOut,
+} = NextAuth({
   providers: [
-    GitHub,
-    // Credentials({
-    //   credentials: {
-    //     email: {},
-    //     password: {},
-    //   },
-    //   authorize: async (credentials) => {
-    //     try {
-    //       let user = null
-
-    //       const { email, password } = await signInSchema.parseAsync(credentials)
-
-    //       // const pwHash = saltAndHashPassword(password)
-
-    //       // user = await getUserFromDb(email, pwHash)
-
-    //       // if (!user) {
-    //       //   throw new Error("Invalid credentials.")
-    //       // }
-
-    //       // return user
-    //       return { email, password }
-    //     } catch (error) {
-    //       if (error instanceof ZodError) {
-    //         return null
-    //       }
-    //     }
-    //   },
-    // }),
+    Credentials({
+      name: 'Credentials',
+      credentials: {
+        username: { label: 'Username', type: 'text' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        // Add your database lookup logic here using drizzle
+        const user = { id: 1, name: 'J Smith', email: 'jsmith@example.com' };
+        return user || null;
+      },
+    }),
+    GitHub({
+      clientId: process.env.GITHUB_CLIENT_ID,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+    }),
   ],
 });
