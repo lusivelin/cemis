@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { ZodError } from 'zod';
 import { APIError } from '@/types/api';
+import { auth } from '@/backend/auth';
 
 export async function apiHandler(req: NextRequest, handler: (req: NextRequest) => Promise<Response>) {
   try {
-    // Verify authentication
-    // const session = await getServerSession();
-    if (!true) {
+    const session = await auth();
+
+    if (!session) {
       throw new APIError(401, 'Unauthorized');
     }
 
