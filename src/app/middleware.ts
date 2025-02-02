@@ -1,9 +1,9 @@
-import { auth } from '@/auth';
+import { auth } from '@/backend/auth';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/api/back-office')) {
+  if (request.nextUrl.pathname.startsWith('/api/v1')) {
     const session = await auth();
 
     if (!session) {

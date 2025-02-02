@@ -4,6 +4,7 @@ import { students } from './student';
 import { courses } from './course';
 import { assignments } from './assignment';
 import { exams } from './exam';
+import { timestamps } from './timestamp';
 
 export const grades = pgTable('grades', {
   id: integer('id').primaryKey(),
@@ -14,6 +15,7 @@ export const grades = pgTable('grades', {
   marks: integer('marks').notNull(),
   grade: varchar('grade').notNull(),
   gradedAt: timestamp('graded_at').defaultNow(),
+  ...timestamps,
 });
 
 export const gradeRelations = relations(grades, ({ one }) => ({

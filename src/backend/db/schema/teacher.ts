@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import { integer, pgTable, text, varchar } from 'drizzle-orm/pg-core';
 import { users } from './auth';
 import { courses } from './course';
+import { timestamps } from './timestamp';
 
 export const teachers = pgTable('teachers', {
   id: integer('id').primaryKey(),
@@ -10,6 +11,7 @@ export const teachers = pgTable('teachers', {
     .notNull(),
   department: varchar('department').notNull(),
   designation: varchar('designation').notNull(),
+  ...timestamps,
 });
 
 export const teacherRelations = relations(teachers, ({ one, many }) => ({

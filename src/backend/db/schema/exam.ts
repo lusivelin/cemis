@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { courses } from './course';
 import { grades } from './grade';
+import { timestamps } from './timestamp';
 
 export const exams = pgTable('exams', {
   id: integer('id').primaryKey(),
@@ -10,6 +11,7 @@ export const exams = pgTable('exams', {
   examDate: timestamp('exam_date').notNull(),
   duration: integer('duration').notNull(),
   totalMarks: integer('total_marks').notNull(),
+  ...timestamps,
 });
 
 export const examRelations = relations(exams, ({ one, many }) => ({

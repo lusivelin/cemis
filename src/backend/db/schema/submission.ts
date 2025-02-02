@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import { boolean, integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { assignments } from './assignment';
 import { students } from './student';
+import { timestamps } from './timestamp';
 
 export const submissions = pgTable('submissions', {
   id: integer('id').primaryKey(),
@@ -12,6 +13,7 @@ export const submissions = pgTable('submissions', {
   status: varchar('status').notNull(),
   feedback: text('feedback'),
   isLate: boolean('is_late').default(false),
+  ...timestamps,
 });
 
 export const submissionRelations = relations(submissions, ({ one }) => ({

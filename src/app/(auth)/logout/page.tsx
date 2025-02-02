@@ -1,4 +1,4 @@
-import { signOut } from '@/auth';
+import { signOut } from '@/backend/auth';
 
 export default function SignOutPage() {
   return (

@@ -36,6 +36,13 @@
       "when": 1738491591728,
       "tag": "0004_striped_timeslip",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1738503507036,
+      "tag": "0005_concerned_hobgoblin",
+      "breakpoints": true
     }
   ]
 }

@@ -3,6 +3,7 @@ import { integer, pgTable, text, timestamp, varchar } from 'drizzle-orm/pg-core'
 import { courses } from './course';
 import { grades } from './grade';
 import { submissions } from './submission';
+import { timestamps } from './timestamp';
 
 export const assignments = pgTable('assignments', {
   id: integer('id').primaryKey(),
@@ -11,6 +12,7 @@ export const assignments = pgTable('assignments', {
   description: text('description'),
   dueDate: timestamp('due_date').notNull(),
   totalMarks: integer('total_marks').notNull(),
+  ...timestamps,
 });
 
 export const assignmentRelations = relations(assignments, ({ one, many }) => ({

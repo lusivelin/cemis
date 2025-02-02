@@ -2,6 +2,7 @@ import { relations } from 'drizzle-orm';
 import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 import { students } from './student';
 import { courses } from './course';
+import { timestamps } from './timestamp';
 
 export const enrollments = pgTable('enrollments', {
   id: integer('id').primaryKey(),
@@ -9,6 +10,7 @@ export const enrollments = pgTable('enrollments', {
   courseId: integer('course_id').references(() => courses.id),
   semester: varchar('semester').notNull(),
   enrolledAt: timestamp('enrolled_at').defaultNow(),
+  ...timestamps,
 });
 
 export const enrollmentRelations = relations(enrollments, ({ one }) => ({

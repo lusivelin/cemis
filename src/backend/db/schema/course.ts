@@ -4,6 +4,7 @@ import { teachers } from './teacher';
 import { assignments } from './assignment';
 import { exams } from './exam';
 import { enrollments } from './enrollment';
+import { timestamps } from './timestamp';
 
 export const courses = pgTable('courses', {
   id: integer('id').primaryKey(),
@@ -12,6 +13,7 @@ export const courses = pgTable('courses', {
   description: text('description'),
   credits: integer('credits').notNull(),
   teacherId: integer('teacher_id').references(() => teachers.id),
+  ...timestamps,
 });
 
 export const courseRelations = relations(courses, ({ one, many }) => ({

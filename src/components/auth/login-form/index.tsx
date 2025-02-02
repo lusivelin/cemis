@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/lib/components/ui/button';
 import { Input } from '@/lib/components/ui/input';
 import { Label } from '@/lib/components/ui/label';
-import { providerMap, signIn } from '@/auth';
+import { providerMap, signIn } from '@/backend/auth';
 
 export function LoginForm({ className, ...props }: React.ComponentPropsWithoutRef<'form'>) {
   return (

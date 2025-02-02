@@ -4,6 +4,7 @@ import { users } from './auth';
 import { enrollments } from './enrollment';
 import { grades } from './grade';
 import { attendances } from './attendance';
+import { timestamps } from './timestamp';
 
 export const students = pgTable('students', {
   id: integer('id').primaryKey(),
@@ -13,6 +14,7 @@ export const students = pgTable('students', {
   studentId: varchar('student_id').notNull().unique(),
   program: varchar('program').notNull(),
   batch: integer('batch').notNull(),
+  ...timestamps,
 });
 
 export const studentRelations = relations(students, ({ many, one }) => ({
