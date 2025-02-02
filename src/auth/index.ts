@@ -1,7 +1,7 @@
 import authConfig from '@/auth/config';
 import NextAuth from 'next-auth';
 import { DrizzleAdapter } from '@auth/drizzle-adapter';
-import { db } from '@/db/schema';
+import { db } from '@/db';
 import GitHub from 'next-auth/providers/github';
 import Credentials from 'next-auth/providers/credentials';
 import type { Provider } from 'next-auth/providers';

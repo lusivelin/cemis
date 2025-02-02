@@ -1,13 +1,5 @@
 import { boolean, timestamp, pgTable, text, primaryKey, integer } from 'drizzle-orm/pg-core';
-import postgres from 'postgres';
-import { drizzle } from 'drizzle-orm/postgres-js';
 import type { AdapterAccountType } from 'next-auth/adapters';
-
-const connectionString =
-  'postgresql://lusivelin:RxyEPFa13khS@ep-holy-leaf-a1ikno1f.ap-southeast-1.aws.neon.tech/cemis?sslmode=require';
-const pool = postgres(connectionString, { max: 1 });
-
-export const db = drizzle(pool);
 
 export const users = pgTable('user', {
   id: text('id')

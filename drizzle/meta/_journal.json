@@ -8,6 +8,34 @@
       "when": 1737476136666,
       "tag": "0000_polite_ricochet",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1738490791183,
+      "tag": "0001_worried_crystal",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1738491310429,
+      "tag": "0002_amusing_sir_ram",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1738491331824,
+      "tag": "0003_tidy_piledriver",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1738491591728,
+      "tag": "0004_striped_timeslip",
+      "breakpoints": true
     }
   ]
 }
