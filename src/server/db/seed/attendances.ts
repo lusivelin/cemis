@@ -23,66 +23,75 @@ export async function seedAttendances(config: SeedAttendancesConfig) {
     studentIds,
     courseIds,
     dateRange = {
-      start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30), // 30 days ago
+      start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30),
       end: new Date(),
     },
     attendanceRate = 90,
   } = config;
 
-  const attendanceStatuses = ['present', 'absent', 'late', 'excused'];
+  const courseDays = new Map<string, number[]>();
+  courseIds.forEach((courseId, index) => {
+    courseDays.set(courseId, index % 2 === 0 ? [1, 3] : [2, 4]);
+  });
 
-  const attendanceRecords = [];
-
-  // Generate dates within the range
   const dates: Date[] = [];
   let currentDate = new Date(dateRange.start);
   while (currentDate <= dateRange.end) {
-    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
-      // Exclude weekends
+    if (dates.length < 4) {
       dates.push(new Date(currentDate));
     }
     currentDate.setDate(currentDate.getDate() + 1);
   }
 
+  let totalInserted = 0;
+  const BATCH_SIZE = 100;
+
   for (const courseId of courseIds) {
+    const courseDaysList = courseDays.get(courseId) || [1, 3];
+    
+    const courseDates = dates.filter(date => 
+      courseDaysList.includes(date.getDay())
+    );
+
     for (const studentId of studentIds) {
-      for (const date of dates) {
-        // Determine if we should create an attendance record based on attendance rate
+      const attendanceRecords = [];
+
+      for (const date of courseDates) {
         if (faker.number.int(100) < attendanceRate) {
-          // Weight the status probabilities
-          let status;
           const rand = faker.number.int(100);
-          if (rand < 85) {
-            status = 'present';
-          } else if (rand < 90) {
-            status = 'late';
-          } else if (rand < 95) {
-            status = 'excused';
-          } else {
-            status = 'absent';
-          }
+          let status;
+          
+          if (rand < 85) status = 'present';
+          else if (rand < 90) status = 'late';
+          else if (rand < 95) status = 'excused';
+          else status = 'absent';
 
           attendanceRecords.push({
             studentId,
             courseId,
-            date: date.toISOString().split('T')[0], // Format as YYYY-MM-DD
+            date: date.toISOString().split('T')[0],
             status,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
         }
       }
+
+      if (attendanceRecords.length > 0) {
+        const inserted = await db
+          .insert(attendances)
+          .values(attendanceRecords)
+          .returning();
+        
+        totalInserted += inserted.length;
+      }
     }
+    
+    console.log(`Inserted attendance records for course ${courseId}...`);
   }
 
-  // Sort by date
-  attendanceRecords.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-  const insertedAttendances = await db.insert(attendances).values(attendanceRecords).returning();
-
-  console.log(`✅ Seeded ${insertedAttendances.length} attendance records`);
-
-  return insertedAttendances;
+  console.log(`✅ Seeded ${totalInserted} attendance records`);
+  return totalInserted;
 }
 
 export async function seedTermAttendances(

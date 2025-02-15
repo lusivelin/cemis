@@ -28,11 +28,6 @@ async function seedDatabase() {
     const adminIds = await seedAdmins();
     const courseIds = await seedCourses({ teacherIds: teacherIds.map((t) => t.id) });
     const assignmentIds = await seedAssignments({ courseIds: courseIds.map((t) => t.id) });
-    const attendanceIds = await seedAttendances({
-      courseIds: courseIds.map((t) => t.id),
-      studentIds: studentIds.map((s) => s.id),
-    });
-
     const enrollmentIds = await seedEnrollments({
       courseIds: courseIds.map((t) => t.id),
       studentIds: studentIds.map((s) => s.id),
@@ -49,6 +44,11 @@ async function seedDatabase() {
       examIds: examIds,
     });
 
+    const attendanceIds = await seedAttendances({
+      courseIds: courseIds.map((t) => t.id),
+      studentIds: studentIds.map((s) => s.id),
+    });
+
     console.log('Database seeded successfully');
   } catch (error) {
     console.error('Error seeding database:', error);
@@ -58,15 +58,18 @@ async function seedDatabase() {
 
 async function clearData() {
   console.log('🧹 Clearing existing data...');
-  await db.delete(students);
-  await db.delete(teachers);
-  await db.delete(admins);
-  await db.delete(courses);
+  await db.delete(grades);
+
+  await db.delete(exams);
   await db.delete(assignments);
   await db.delete(attendances);
   await db.delete(enrollments);
-  await db.delete(exams);
-  await db.delete(grades);
+
+  await db.delete(courses);
+
+  await db.delete(students);
+  await db.delete(teachers);
+  await db.delete(admins);
 }
 
 seedDatabase();

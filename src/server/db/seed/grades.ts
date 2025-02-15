@@ -13,41 +13,44 @@ interface SeedGradesConfig {
   };
 }
 
+const calculateLetterGrade = (percentage: number): string => {
+  if (percentage >= 90) return 'A';
+  if (percentage >= 80) return 'B';
+  if (percentage >= 70) return 'C';
+  if (percentage >= 60) return 'D';
+  return 'F';
+};
+
 export async function seedGrades({
   studentIds,
   courseIds,
   assignmentIds,
   examIds,
   dateRange = {
-    start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30), // 30 days ago
+    start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 30),
     end: new Date(),
   },
 }: SeedGradesConfig) {
   console.log('📊 Seeding grades...');
 
-  const gradeRecords = [];
+  const BATCH_SIZE = 100;
+  let totalInserted = 0;
 
-  const calculateLetterGrade = (percentage: number): string => {
-    if (percentage >= 90) return 'A';
-    if (percentage >= 80) return 'B';
-    if (percentage >= 70) return 'C';
-    if (percentage >= 60) return 'D';
-    return 'F';
-  };
-
+  // Process assignments
+  console.log('Processing assignment grades...');
   for (const assignment of assignmentIds) {
-    for (const studentId of studentIds) {
-      const totalMarks = parseInt(assignment.totalMarks);
+    const gradeRecords = [];
+    const totalMarks = parseInt(assignment.totalMarks);
+    const meanScore = totalMarks * 0.8;
+    const stdDev = totalMarks * 0.1;
 
-      const meanScore = totalMarks * 0.8;
-      const stdDev = totalMarks * 0.1;
+    for (const studentId of studentIds) {
       let marks = Math.round(
         faker.number.int({
-          min: meanScore - 2 * stdDev,
-          max: meanScore + 2 * stdDev,
+          min: Math.max(0, meanScore - 2 * stdDev),
+          max: Math.min(totalMarks, meanScore + 2 * stdDev),
         })
       );
-      marks = Math.min(Math.max(marks, 0), totalMarks);
 
       const percentage = (marks / totalMarks) * 100;
 
@@ -68,22 +71,37 @@ export async function seedGrades({
         createdAt: new Date(),
         updatedAt: new Date(),
       });
+
+      if (gradeRecords.length >= BATCH_SIZE) {
+        const inserted = await db.insert(grades).values(gradeRecords).returning();
+        totalInserted += inserted.length;
+        gradeRecords.length = 0;
+        console.log(`Inserted ${totalInserted} grades so far...`);
+      }
+    }
+
+    // Insert remaining records
+    if (gradeRecords.length > 0) {
+      const inserted = await db.insert(grades).values(gradeRecords).returning();
+      totalInserted += inserted.length;
     }
   }
 
+  // Process exams
+  console.log('Processing exam grades...');
   for (const exam of examIds) {
-    for (const studentId of studentIds) {
-      const totalMarks = exam.totalMarks;
+    const gradeRecords = [];
+    const totalMarks = exam.totalMarks;
+    const meanScore = totalMarks * 0.75;
+    const stdDev = totalMarks * 0.15;
 
-      const meanScore = totalMarks * 0.75;
-      const stdDev = totalMarks * 0.15;
+    for (const studentId of studentIds) {
       let marks = Math.round(
         faker.number.int({
-          min: meanScore - 2 * stdDev,
-          max: meanScore + 2 * stdDev,
+          min: Math.max(0, meanScore - 2 * stdDev),
+          max: Math.min(totalMarks, meanScore + 2 * stdDev),
         })
       );
-      marks = Math.min(Math.max(marks, 0), totalMarks);
 
       const percentage = (marks / totalMarks) * 100;
 
@@ -104,14 +122,22 @@ export async function seedGrades({
         createdAt: new Date(),
         updatedAt: new Date(),
       });
+
+      if (gradeRecords.length >= BATCH_SIZE) {
+        const inserted = await db.insert(grades).values(gradeRecords).returning();
+        totalInserted += inserted.length;
+        gradeRecords.length = 0;
+        console.log(`Inserted ${totalInserted} grades so far...`);
+      }
+    }
+
+    // Insert remaining records
+    if (gradeRecords.length > 0) {
+      const inserted = await db.insert(grades).values(gradeRecords).returning();
+      totalInserted += inserted.length;
     }
   }
 
-  gradeRecords.sort((a, b) => new Date(a.gradedAt).getTime() - new Date(b.gradedAt).getTime());
-
-  const insertedGrades = await db.insert(grades).values(gradeRecords).returning();
-
-  console.log(`✅ Seeded ${insertedGrades.length} grades`);
-
-  return insertedGrades;
+  console.log(`✅ Seeded ${totalInserted} grades`);
+  return totalInserted;
 }
