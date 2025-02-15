@@ -3,7 +3,7 @@ import { timestamps } from './timestamps';
 
 export const students = pgTable('students', {
   id: uuid('id').defaultRandom().primaryKey(),
-  userId: uuid('user_id').notNull(),
+  authUserId: uuid('auth_user_id'),
   batch: integer('batch').notNull(),
   program: text('program').notNull(),
   ...timestamps,

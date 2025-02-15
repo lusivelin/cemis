@@ -9,7 +9,6 @@ export const enrollments = pgTable('enrollments', {
   courseId: uuid('course_id').references(() => courses.id),
 
   enrolledAt: date('enrolled_at').notNull(),
-  // enums later
   semester: text('semester').notNull(),
   ...timestamps,
 });

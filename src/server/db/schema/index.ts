@@ -1,7 +1,9 @@
 export * from './students';
 export * from './admins';
 export * from './teachers';
-// export * from './bookings';
-// export * from './attendees';
-// export * from './templates';
-// export * from './payments';
+export * from './assignments';
+export * from './enrollments';
+export * from './courses';
+export * from './attendances';
+export * from './exams';
+export * from './grades';
