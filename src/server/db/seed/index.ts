@@ -1,5 +1,15 @@
 import { db } from '@/server/db';
-import { students, teachers, admins, courses, assignments, attendances, enrollments, exams, grades } from '@/server/db/schema';
+import {
+  students,
+  teachers,
+  admins,
+  courses,
+  assignments,
+  attendances,
+  enrollments,
+  exams,
+  grades,
+} from '@/server/db/schema';
 import { seedStudents } from '@/server/db/seed/students';
 import { seedTeachers } from '@/server/db/seed/teachers';
 import { seedAdmins } from '@/server/db/seed/admins';

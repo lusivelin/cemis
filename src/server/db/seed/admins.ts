@@ -21,12 +21,9 @@ export async function seedAdmins(config: SeedAdminsConfig = {}) {
     });
   }
 
-  const insertedAdmins = await db
-    .insert(admins)
-    .values(adminRecords)
-    .returning();
+  const insertedAdmins = await db.insert(admins).values(adminRecords).returning();
 
   console.log(`✅ Seeded ${insertedAdmins.length} admins`);
-  
+
   return insertedAdmins;
 }

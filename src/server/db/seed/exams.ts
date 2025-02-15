@@ -30,14 +30,7 @@ export async function seedExams(config: SeedExamsConfig) {
     },
   } = config;
 
-  const examTypes = [
-    'Midterm',
-    'Final',
-    'Quiz',
-    'Practical',
-    'Oral',
-    'Written'
-  ];
+  const examTypes = ['Midterm', 'Final', 'Quiz', 'Practical', 'Oral', 'Written'];
 
   const examDurations = [60, 90, 120, 150, 180];
   const examMarks = [50, 75, 100, 150, 200];
@@ -47,16 +40,15 @@ export async function seedExams(config: SeedExamsConfig) {
   for (const courseId of courseIds) {
     const numExams = faker.number.int({
       min: examsPerCourse.min,
-      max: examsPerCourse.max
+      max: examsPerCourse.max,
     });
 
-    const courseExamTypes = faker.helpers.shuffle([...examTypes])
-      .slice(0, numExams);
+    const courseExamTypes = faker.helpers.shuffle([...examTypes]).slice(0, numExams);
 
     for (let i = 0; i < numExams; i++) {
       const examDate = faker.date.between({
         from: dateRange.start,
-        to: dateRange.end
+        to: dateRange.end,
       });
 
       examRecords.push({
@@ -71,17 +63,12 @@ export async function seedExams(config: SeedExamsConfig) {
     }
   }
 
-  examRecords.sort((a, b) => 
-    new Date(a.examDate).getTime() - new Date(b.examDate).getTime()
-  );
+  examRecords.sort((a, b) => new Date(a.examDate).getTime() - new Date(b.examDate).getTime());
 
-  const insertedExams = await db
-    .insert(exams)
-    .values(examRecords)
-    .returning();
+  const insertedExams = await db.insert(exams).values(examRecords).returning();
 
   console.log(`✅ Seeded ${insertedExams.length} exams`);
-  
+
   return insertedExams;
 }
 
@@ -102,6 +89,6 @@ export async function seedTermExams(
       start: termConfig.startDate,
       end: termConfig.endDate,
     },
-    examsPerCourse: termConfig.examsPerCourse
+    examsPerCourse: termConfig.examsPerCourse,
   });
 }

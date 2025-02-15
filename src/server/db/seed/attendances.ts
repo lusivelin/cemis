@@ -29,12 +29,7 @@ export async function seedAttendances(config: SeedAttendancesConfig) {
     attendanceRate = 90,
   } = config;
 
-  const attendanceStatuses = [
-    'present',
-    'absent',
-    'late',
-    'excused'
-  ];
+  const attendanceStatuses = ['present', 'absent', 'late', 'excused'];
 
   const attendanceRecords = [];
 
@@ -42,7 +37,8 @@ export async function seedAttendances(config: SeedAttendancesConfig) {
   const dates: Date[] = [];
   let currentDate = new Date(dateRange.start);
   while (currentDate <= dateRange.end) {
-    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) { // Exclude weekends
+    if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6) {
+      // Exclude weekends
       dates.push(new Date(currentDate));
     }
     currentDate.setDate(currentDate.getDate() + 1);
@@ -82,13 +78,10 @@ export async function seedAttendances(config: SeedAttendancesConfig) {
   // Sort by date
   attendanceRecords.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  const insertedAttendances = await db
-    .insert(attendances)
-    .values(attendanceRecords)
-    .returning();
+  const insertedAttendances = await db.insert(attendances).values(attendanceRecords).returning();
 
   console.log(`✅ Seeded ${insertedAttendances.length} attendance records`);
-  
+
   return insertedAttendances;
 }
 
@@ -108,6 +101,6 @@ export async function seedTermAttendances(
       start: termConfig.startDate,
       end: termConfig.endDate,
     },
-    attendanceRate: termConfig.attendanceRate
+    attendanceRate: termConfig.attendanceRate,
   });
 }

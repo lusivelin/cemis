@@ -21,7 +21,7 @@ export async function seedTeachers(config: SeedTeachersConfig = {}) {
       'Chemistry',
       'Business Administration',
       'English',
-      'History'
+      'History',
     ],
     designations = [
       'Professor',
@@ -30,8 +30,8 @@ export async function seedTeachers(config: SeedTeachersConfig = {}) {
       'Senior Lecturer',
       'Lecturer',
       'Visiting Faculty',
-      'Department Head'
-    ]
+      'Department Head',
+    ],
   } = config;
 
   const teacherRecords = [];
@@ -46,12 +46,9 @@ export async function seedTeachers(config: SeedTeachersConfig = {}) {
     });
   }
 
-  const insertedTeachers = await db
-    .insert(teachers)
-    .values(teacherRecords)
-    .returning();
+  const insertedTeachers = await db.insert(teachers).values(teacherRecords).returning();
 
   console.log(`✅ Seeded ${insertedTeachers.length} teachers`);
-  
+
   return insertedTeachers;
 }

@@ -14,7 +14,7 @@ export async function seedStudents(config: SeedStudentsConfig = {}) {
   const {
     count = 50,
     startingBatch = new Date().getFullYear(),
-    programs = ['Computer Science', 'Engineering', 'Business', 'Mathematics', 'Physics']
+    programs = ['Computer Science', 'Engineering', 'Business', 'Mathematics', 'Physics'],
   } = config;
 
   const studentRecords = [];
@@ -32,12 +32,9 @@ export async function seedStudents(config: SeedStudentsConfig = {}) {
   }
 
   // Insert all students in a single batch operation
-  const insertedStudents = await db
-    .insert(students)
-    .values(studentRecords)
-    .returning();
+  const insertedStudents = await db.insert(students).values(studentRecords).returning();
 
   console.log(`✅ Seeded ${insertedStudents.length} students`);
-  
+
   return insertedStudents;
 }

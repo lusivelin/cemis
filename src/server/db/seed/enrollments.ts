@@ -31,7 +31,7 @@ export async function seedEnrollments(config: SeedEnrollmentsConfig) {
       start: new Date(Date.now() - 1000 * 60 * 60 * 24 * 14), // 14 days ago
       end: new Date(),
     },
-    enrollmentsPerStudent = { min: 3, max: 6 }
+    enrollmentsPerStudent = { min: 3, max: 6 },
   } = config;
 
   const enrollmentRecords = [];
@@ -39,16 +39,15 @@ export async function seedEnrollments(config: SeedEnrollmentsConfig) {
   for (const studentId of studentIds) {
     const numEnrollments = faker.number.int({
       min: enrollmentsPerStudent.min,
-      max: enrollmentsPerStudent.max
+      max: enrollmentsPerStudent.max,
     });
 
-    const selectedCourses = faker.helpers.shuffle([...courseIds])
-      .slice(0, numEnrollments);
+    const selectedCourses = faker.helpers.shuffle([...courseIds]).slice(0, numEnrollments);
 
     for (const courseId of selectedCourses) {
       const enrolledAt = faker.date.between({
         from: enrollmentDate.start,
-        to: enrollmentDate.end
+        to: enrollmentDate.end,
       });
 
       enrollmentRecords.push({
@@ -62,17 +61,12 @@ export async function seedEnrollments(config: SeedEnrollmentsConfig) {
     }
   }
 
-  enrollmentRecords.sort((a, b) => 
-    new Date(a.enrolledAt).getTime() - new Date(b.enrolledAt).getTime()
-  );
+  enrollmentRecords.sort((a, b) => new Date(a.enrolledAt).getTime() - new Date(b.enrolledAt).getTime());
 
-  const insertedEnrollments = await db
-    .insert(enrollments)
-    .values(enrollmentRecords)
-    .returning();
+  const insertedEnrollments = await db.insert(enrollments).values(enrollmentRecords).returning();
 
   console.log(`✅ Seeded ${insertedEnrollments.length} enrollments`);
-  
+
   return insertedEnrollments;
 }
 
@@ -110,6 +104,6 @@ export async function seedSemesterEnrollments(
     courseIds,
     semester: semesterConfig.semester,
     enrollmentDate: semesterConfig.enrollmentPeriod,
-    enrollmentsPerStudent: semesterConfig.enrollmentsPerStudent
+    enrollmentsPerStudent: semesterConfig.enrollmentsPerStudent,
   });
 }

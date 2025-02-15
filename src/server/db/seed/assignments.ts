@@ -40,7 +40,7 @@ export async function seedAssignments(config: SeedAssignmentsConfig) {
     'Programming Assignment',
     'Essay',
     'Presentation',
-    'Final Report'
+    'Final Report',
   ];
 
   const assignmentRecords = [];
@@ -48,7 +48,7 @@ export async function seedAssignments(config: SeedAssignmentsConfig) {
   for (const courseId of courseIds) {
     const numAssignments = faker.number.int({
       min: assignmentsPerCourse.min,
-      max: assignmentsPerCourse.max
+      max: assignmentsPerCourse.max,
     });
 
     for (let i = 0; i < numAssignments; i++) {
@@ -57,7 +57,7 @@ export async function seedAssignments(config: SeedAssignmentsConfig) {
 
       const dueDate = faker.date.between({
         from: dateRange.start,
-        to: dateRange.end
+        to: dateRange.end,
       });
 
       assignmentRecords.push({
@@ -74,21 +74,21 @@ export async function seedAssignments(config: SeedAssignmentsConfig) {
 
   assignmentRecords.sort((a, b) => new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime());
 
-  const insertedAssignments = await db
-    .insert(assignments)
-    .values(assignmentRecords)
-    .returning();
+  const insertedAssignments = await db.insert(assignments).values(assignmentRecords).returning();
 
   console.log(`✅ Seeded ${insertedAssignments.length} assignments`);
-  
+
   return insertedAssignments;
 }
 
 // Helper function to generate assignments for an academic term
-export async function seedTermAssignments(courseIds: string[], termConfig: {
-  startDate: Date;
-  endDate: Date;
-}) {
+export async function seedTermAssignments(
+  courseIds: string[],
+  termConfig: {
+    startDate: Date;
+    endDate: Date;
+  }
+) {
   return seedAssignments({
     courseIds,
     dateRange: {
@@ -97,7 +97,7 @@ export async function seedTermAssignments(courseIds: string[], termConfig: {
     },
     assignmentsPerCourse: {
       min: 4,
-      max: 8
-    }
+      max: 8,
+    },
   });
 }

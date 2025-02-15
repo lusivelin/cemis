@@ -15,11 +15,7 @@ export async function seedCourses(config: SeedCoursesConfig) {
     throw new Error('Teacher IDs are required to seed courses');
   }
 
-  const {
-    count = 40,
-    teacherIds,
-    courseCodePrefix = 'CS'
-  } = config;
+  const { count = 40, teacherIds, courseCodePrefix = 'CS' } = config;
 
   const courseSubjects = [
     'Introduction to',
@@ -29,7 +25,7 @@ export async function seedCourses(config: SeedCoursesConfig) {
     'Principles of',
     'Applied',
     'Research Methods in',
-    'Seminar in'
+    'Seminar in',
   ];
 
   const courseTopics = [
@@ -46,7 +42,7 @@ export async function seedCourses(config: SeedCoursesConfig) {
     'Mobile Computing',
     'Computer Architecture',
     'Information Security',
-    'Cloud Computing'
+    'Cloud Computing',
   ];
 
   const courseRecords = [];
@@ -71,31 +67,28 @@ export async function seedCourses(config: SeedCoursesConfig) {
     });
   }
 
-  const insertedCourses = await db
-    .insert(courses)
-    .values(courseRecords)
-    .returning();
+  const insertedCourses = await db.insert(courses).values(courseRecords).returning();
 
   console.log(`✅ Seeded ${insertedCourses.length} courses`);
-  
+
   return insertedCourses;
 }
 
 export async function seedDepartmentCourses(teacherIds: string[], department: string) {
   const departmentPrefixes: Record<string, string> = {
     'Computer Science': 'CS',
-    'Mathematics': 'MATH',
-    'Physics': 'PHYS',
-    'Engineering': 'ENG',
-    'Chemistry': 'CHEM',
+    Mathematics: 'MATH',
+    Physics: 'PHYS',
+    Engineering: 'ENG',
+    Chemistry: 'CHEM',
     'Business Administration': 'BUS',
-    'English': 'ENG',
-    'History': 'HIST'
+    English: 'ENG',
+    History: 'HIST',
   };
 
   return seedCourses({
     teacherIds,
     courseCodePrefix: departmentPrefixes[department] || department.substring(0, 4).toUpperCase(),
-    count: faker.number.int({ min: 5, max: 15 }) // Random number of courses per department
+    count: faker.number.int({ min: 5, max: 15 }), // Random number of courses per department
   });
 }
