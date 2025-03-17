@@ -44,38 +44,16 @@ export default function AppSidebar({ user }: Props) {
       icon: Home,
     },
     {
-      title: 'Events',
-      url: '/events',
+      title: 'Students',
+      url: '/students',
       icon: Star,
-    },
-    {
-      title: 'Registration',
-      url: '/registration',
-      icon: UserIcon,
       children: [
         {
-          title: 'Attendees',
-          url: '/registration/attendees',
+          title: 'All Students',
+          url: '/students',
           icon: Users,
         },
-        {
-          title: 'Orders',
-          url: '/registration/orders',
-          icon: ListOrdered,
-        },
-      ],
-    },
-    {
-      title: 'Trip Category',
-      url: '/trip-category',
-      icon: UserIcon,
-      children: [
-        {
-          title: 'Hotels',
-          url: '/trip-category/hotels',
-          icon: ListOrdered,
-        },
-      ],
+      ]
     },
   ];
 
@@ -83,7 +61,7 @@ export default function AppSidebar({ user }: Props) {
     <Sidebar collapsible="icon">
       <SidebarHeader>
         <div className="p-2">
-          <strong>Actxplorer</strong>
+          <strong>CEMIS</strong>
         </div>
       </SidebarHeader>
       <SidebarContent>

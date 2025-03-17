@@ -37,11 +37,27 @@ export async function seedTeachers(config: SeedTeachersConfig = {}) {
   const teacherRecords = [];
 
   for (let i = 0; i < count; i++) {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    
+    const designation = faker.helpers.arrayElement(designations);
+    const displayName = `${designation} ${firstName} ${lastName}`;
+    
+    const department = faker.helpers.arrayElement(departments);
+    const gender = faker.helpers.arrayElement(['Male', 'Female', 'Other', 'Prefer not to say']);
+    
     teacherRecords.push({
       authUserId: faker.string.uuid(),
-      department: faker.helpers.arrayElement(departments),
-      designation: faker.helpers.arrayElement(designations),
-      createdAt: new Date(),
+      firstName: firstName,
+      lastName: lastName,
+      displayName: displayName,
+      email: faker.internet.email({ firstName, lastName }).toLowerCase(),
+      phone: faker.phone.number(),
+      gender: gender,
+      dateOfBirth: faker.date.birthdate({ min: 25, max: 65, mode: 'age' }),
+      department: department,
+      designation: designation,
+      createdAt: faker.date.past({ years: 3 }),
       updatedAt: new Date(),
     });
   }

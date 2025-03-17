@@ -23,7 +23,7 @@ const pool = postgres(connectionString, {
     require: process.env.NODE_ENV === 'production',
   },
   connection: {
-    application_name: 'actxplorer',
+    application_name: 'cemis',
     keepalive: true,
   },
 });

@@ -11,6 +11,7 @@
     "db:migrate": "pnpm drizzle-kit migrate",
     "db:push": "pnpm drizzle-kit push",
     "db:pull": "pnpm drizzle-kit pull",
+    "db:introspect": "pnpm drizzle-kit introspect",
     "db:generate": "pnpm drizzle-kit generate",
     "db:seed": "tsx ./src/server/db/seed/index.ts",
     "prepare": "husky"

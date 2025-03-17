@@ -28,16 +28,16 @@ const api = createTRPCClient<AppRouter>({
       ({ op }) =>
         observable((observer) => {
           createContext()
-            .then((ctx) =>
-              callTRPCProcedure({
+            .then((ctx) => {
+              return callTRPCProcedure({
                 getRawInput: async () => await op.input,
                 procedures: appRouter._def.procedures,
                 path: op.path,
                 ctx,
                 type: op.type,
                 signal: undefined,
-              })
-            )
+              });
+            })
             .then((data) => {
               observer.next({ result: { data } });
               observer.complete();

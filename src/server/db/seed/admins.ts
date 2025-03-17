@@ -14,9 +14,20 @@ export async function seedAdmins(config: SeedAdminsConfig = {}) {
   const adminRecords = [];
 
   for (let i = 0; i < count; i++) {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    
     adminRecords.push({
       authUserId: faker.string.uuid(),
-      createdAt: new Date(),
+      firstName: firstName,
+      lastName: lastName,
+      displayName: `${firstName} ${lastName}`,
+      email: faker.internet.email({ firstName, lastName }).toLowerCase(),
+      phone: faker.phone.number(),
+      
+      notes: faker.helpers.maybe(() => faker.lorem.sentence(), { probability: 0.3 }),
+      
+      createdAt: faker.date.past({ years: 1 }),
       updatedAt: new Date(),
     });
   }
