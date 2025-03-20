@@ -9,7 +9,7 @@ interface StudentDetailPageProps {
 }
 
 export default async function StudentDetailPage({ params }: StudentDetailPageProps) {
-  const { id } = params;
+  const { id } = await params;
 
   try {
     const student = await api.students.detail.query({ id });
