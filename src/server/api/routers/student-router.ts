@@ -3,6 +3,8 @@ import { createTRPCRouter, protectedProcedure } from '@/server/api/trpc';
 import { like, desc, asc, and, sql, or, SQL } from 'drizzle-orm';
 import { TRPCError } from '@trpc/server';
 import { students } from '@/server/db/schema/students';
+import { studentCreateSchema } from '@/server/api/requests/student';
+import { RouterOutputs } from '@/trpc/shared';
 
 export const studentRouter = createTRPCRouter({
   list: protectedProcedure
@@ -20,13 +22,15 @@ export const studentRouter = createTRPCRouter({
       const offset = (page - 1) * limit;
 
       try {
-        const searchConditions = search ? or(
-          like(students.firstName, `%${search}%`),
-          like(students.lastName, `%${search}%`),
-          like(students.displayName, `%${search}%`),
-          like(students.email, `%${search}%`),
-          like(students.program, `%${search}%`)
-        ) : undefined
+        const searchConditions = search
+          ? or(
+              like(students.firstName, `%${search}%`),
+              like(students.lastName, `%${search}%`),
+              like(students.displayName, `%${search}%`),
+              like(students.email, `%${search}%`),
+              like(students.program, `%${search}%`)
+            )
+          : undefined;
 
         const whereConditions = [searchConditions].filter(Boolean);
 
@@ -34,14 +38,13 @@ export const studentRouter = createTRPCRouter({
 
         const orderDirection = order === 'asc' ? asc : desc;
 
-
         const orderByExpressions = new Map<typeof sort, SQL<unknown>>([
           ['firstName', orderDirection(students.firstName)],
           ['lastName', orderDirection(students.lastName)],
           ['batch', orderDirection(students.batch)],
           ['program', orderDirection(students.program)],
           ['createdAt', orderDirection(students.createdAt)],
-        ])
+        ]);
 
         const sortOrder = orderByExpressions.get(sort) ?? orderDirection(students.createdAt);
 
@@ -79,4 +82,133 @@ export const studentRouter = createTRPCRouter({
         });
       }
     }),
+  detail: protectedProcedure.input(z.object({ id: z.string() })).query(async ({ ctx, input }) => {
+    try {
+      const student = await ctx.db
+        .select()
+        .from(students)
+        .where(sql`${students.id} = ${input.id}`)
+        .limit(1);
+
+      if (!student || student.length === 0) {
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Student not found',
+        });
+      }
+
+      return student[0];
+    } catch (error) {
+      console.error('Error fetching student by ID:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to fetch student',
+        cause: error,
+      });
+    }
+  }),
+  create: protectedProcedure.input(studentCreateSchema).mutation(async ({ ctx, input }) => {
+    try {
+      const displayName = input.displayName || `${input.firstName} ${input.lastName}`;
+
+      const result = await ctx.db
+        .insert(students)
+        .values({
+          ...input,
+          displayName,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        })
+        .returning();
+
+      return result[0];
+    } catch (error) {
+      console.error('Error creating student:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to create student',
+        cause: error,
+      });
+    }
+  }),
+
+  update: protectedProcedure
+    .input(z.object({
+      id: z.string(),
+      body: studentCreateSchema.partial(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const { id, body } = input;
+        
+        let updateData = { ...body };
+        if (body.firstName || body.lastName) {
+          const currentStudent = await ctx.db
+            .select()
+            .from(students)
+            .where(sql`${students.id} = ${id}`)
+            .limit(1);
+            
+          if (currentStudent.length > 0) {
+            const firstName = body.firstName ?? currentStudent[0].firstName;
+            const lastName = body.lastName ?? currentStudent[0].lastName;
+            updateData.displayName = `${firstName} ${lastName}`;
+          }
+        }
+        
+        updateData.updatedAt = new Date();
+        
+        const result = await ctx.db
+          .update(students)
+          .set(updateData)
+          .where(sql`${students.id} = ${id}`)
+          .returning();
+          
+        if (!result || result.length === 0) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Student not found',
+          });
+        }
+        
+        return result[0];
+      } catch (error) {
+        console.error('Error updating student:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to update student',
+          cause: error,
+        });
+      }
+    }),
+
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const result = await ctx.db
+          .delete(students)
+          .where(sql`${students.id} = ${input.id}`)
+          .returning();
+          
+        if (!result || result.length === 0) {
+          throw new TRPCError({
+            code: 'NOT_FOUND',
+            message: 'Student not found',
+          });
+        }
+        
+        return result[0];
+      } catch (error) {
+        console.error('Error deleting student:', error);
+        throw new TRPCError({
+          code: 'INTERNAL_SERVER_ERROR',
+          message: 'Failed to delete student',
+          cause: error,
+        });
+      }
+    }),
 });
+
+export type StudentListOutput = RouterOutputs['students']['list'];
+export type StudentDetailOutput = RouterOutputs['students']['detail'];

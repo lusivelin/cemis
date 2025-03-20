@@ -17,7 +17,7 @@ export default async function StudentsPage({
   const currentPage = Number(page) || 1;
   const pageSize = 10;
 
-  const { data: students, meta } = await api.student.list.query({
+  const { data: students, meta } = await api.students.list.query({
     page: currentPage,
     limit: pageSize,
     search,
@@ -111,7 +111,7 @@ export default async function StudentsPage({
                         <Eye className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Link href={`/dashboard/students/${student.id}/edit`}>
+                    <Link href={`/dashboard/students/${student.id}`}>
                       <Button variant="outline" size="icon" title="Edit">
                         <Pencil className="h-4 w-4" />
                       </Button>
