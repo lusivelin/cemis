@@ -1,10 +1,20 @@
-import { z } from "zod";
+import { z } from 'zod';
 
 const studentBaseSchema = z.object({
-  firstName: z.string().min(2, "First name must be at least 2 characters").max(50, "First name must be less than 50 characters"),
-  lastName: z.string().min(2, "Last name must be at least 2 characters").max(50, "Last name must be less than 50 characters"),
-  displayName: z.string().min(2, "Display name must be at least 2 characters").max(100, "Display name must be less than 100 characters").nullish(),
-  email: z.string().email("Please enter a valid email address"),
+  firstName: z
+    .string()
+    .min(2, 'First name must be at least 2 characters')
+    .max(50, 'First name must be less than 50 characters'),
+  lastName: z
+    .string()
+    .min(2, 'Last name must be at least 2 characters')
+    .max(50, 'Last name must be less than 50 characters'),
+  displayName: z
+    .string()
+    .min(2, 'Display name must be at least 2 characters')
+    .max(100, 'Display name must be less than 100 characters')
+    .nullish(),
+  email: z.string().email('Please enter a valid email address'),
   phone: z.string().nullish(),
   gender: z.string().nullish(),
   dateOfBirth: z.date().nullish(),
@@ -15,9 +25,9 @@ const studentBaseSchema = z.object({
   guardianName: z.string().nullish(),
   guardianRelationship: z.string().nullish(),
   guardianPhone: z.string().nullish(),
-  guardianEmail: z.string().email("Please enter a valid email address").nullish(),
-  batch: z.number().int().min(1900, "Batch year must be 1900 or later"),
-  program: z.string().min(1, "Program is required"),
+  guardianEmail: z.string().email('Please enter a valid email address').nullish(),
+  batch: z.number().int().min(1900, 'Batch year must be 1900 or later'),
+  program: z.string().min(1, 'Program is required'),
   authUserId: z.string().uuid().nullish(),
 });
 

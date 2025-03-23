@@ -1,9 +1,12 @@
 import { pgTable, uuid, text, integer, timestamp } from 'drizzle-orm/pg-core';
 import { timestamps } from './timestamps';
+import { users } from './users';
 
 export const students = pgTable('students', {
   id: uuid('id').defaultRandom().primaryKey(),
-  authUserId: uuid('auth_user_id'),
+  userId: uuid('user_id')
+    .notNull()
+    .references(() => users.id),
 
   firstName: text('first_name').notNull(),
   lastName: text('last_name').notNull(),

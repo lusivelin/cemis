@@ -9,6 +9,7 @@ import {
   enrollments,
   exams,
   grades,
+  users,
 } from '@/server/db/schema';
 import { seedStudents } from '@/server/db/seed/students';
 import { seedTeachers } from '@/server/db/seed/teachers';
@@ -19,13 +20,29 @@ import { seedAttendances } from '@/server/db/seed/attendances';
 import { seedEnrollments } from '@/server/db/seed/enrollments';
 import { seedExams } from '@/server/db/seed/exams';
 import { seedGrades } from '@/server/db/seed/grades';
+import { clearAuthData, seedUsers } from './users';
 
 async function seedDatabase() {
   try {
     await clearData();
-    const studentIds = await seedStudents();
-    const teacherIds = await seedTeachers();
-    const adminIds = await seedAdmins();
+    const { adminUsers, teacherUsers, studentUsers } = await seedUsers({
+      adminCount: 5,
+      teacherCount: 10,
+      studentCount: 20,
+    });
+
+    const studentIds = await seedStudents({
+      count: 50,
+      existingUsers: studentUsers,
+    });
+    const teacherIds = await seedTeachers({
+      count: 30,
+      existingUsers: teacherUsers,
+    });
+    const adminIds = await seedAdmins({
+      count: 5,
+      existingUsers: adminUsers,
+    });
     const courseIds = await seedCourses({ teacherIds: teacherIds.map((t) => t.id) });
     const assignmentIds = await seedAssignments({ courseIds: courseIds.map((t) => t.id) });
     const enrollmentIds = await seedEnrollments({
@@ -70,6 +87,8 @@ async function clearData() {
   await db.delete(students);
   await db.delete(teachers);
   await db.delete(admins);
+  await db.delete(users);
+  await clearAuthData();
 }
 
 seedDatabase();

@@ -1,4 +1,4 @@
-import StudentForm from "@/components/dashboard/student/create-edit-form";
+import StudentForm from '@/components/dashboard/student/create-edit-form';
 
 export default async function StudentCreatePage() {
   return (

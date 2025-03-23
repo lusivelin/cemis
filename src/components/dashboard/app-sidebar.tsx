@@ -53,7 +53,7 @@ export default function AppSidebar({ user }: Props) {
           url: '/students',
           icon: Users,
         },
-      ]
+      ],
     },
   ];
 

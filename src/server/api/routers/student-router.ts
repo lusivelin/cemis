@@ -133,14 +133,16 @@ export const studentRouter = createTRPCRouter({
   }),
 
   update: protectedProcedure
-    .input(z.object({
-      id: z.string(),
-      body: studentCreateSchema.partial(),
-    }))
+    .input(
+      z.object({
+        id: z.string(),
+        body: studentCreateSchema.partial(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       try {
         const { id, body } = input;
-        
+
         let updateData = { ...body };
         if (body.firstName || body.lastName) {
           const currentStudent = await ctx.db
@@ -148,29 +150,29 @@ export const studentRouter = createTRPCRouter({
             .from(students)
             .where(sql`${students.id} = ${id}`)
             .limit(1);
-            
+
           if (currentStudent.length > 0) {
             const firstName = body.firstName ?? currentStudent[0].firstName;
             const lastName = body.lastName ?? currentStudent[0].lastName;
             updateData.displayName = `${firstName} ${lastName}`;
           }
         }
-        
+
         updateData.updatedAt = new Date();
-        
+
         const result = await ctx.db
           .update(students)
           .set(updateData)
           .where(sql`${students.id} = ${id}`)
           .returning();
-          
+
         if (!result || result.length === 0) {
           throw new TRPCError({
             code: 'NOT_FOUND',
             message: 'Student not found',
           });
         }
-        
+
         return result[0];
       } catch (error) {
         console.error('Error updating student:', error);
@@ -182,32 +184,30 @@ export const studentRouter = createTRPCRouter({
       }
     }),
 
-  delete: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      try {
-        const result = await ctx.db
-          .delete(students)
-          .where(sql`${students.id} = ${input.id}`)
-          .returning();
-          
-        if (!result || result.length === 0) {
-          throw new TRPCError({
-            code: 'NOT_FOUND',
-            message: 'Student not found',
-          });
-        }
-        
-        return result[0];
-      } catch (error) {
-        console.error('Error deleting student:', error);
+  delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
+    try {
+      const result = await ctx.db
+        .delete(students)
+        .where(sql`${students.id} = ${input.id}`)
+        .returning();
+
+      if (!result || result.length === 0) {
         throw new TRPCError({
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to delete student',
-          cause: error,
+          code: 'NOT_FOUND',
+          message: 'Student not found',
         });
       }
-    }),
+
+      return result[0];
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      throw new TRPCError({
+        code: 'INTERNAL_SERVER_ERROR',
+        message: 'Failed to delete student',
+        cause: error,
+      });
+    }
+  }),
 });
 
 export type StudentListOutput = RouterOutputs['students']['list'];

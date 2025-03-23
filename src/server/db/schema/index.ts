@@ -7,3 +7,4 @@ export * from './courses';
 export * from './attendances';
 export * from './exams';
 export * from './grades';
+export * from './users';

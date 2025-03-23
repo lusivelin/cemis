@@ -22,11 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/lib/components/ui/ta
 import { CalendarIcon } from 'lucide-react';
 import { format } from 'date-fns';
 import { Calendar } from '@/lib/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/lib/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/lib/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/lib/components/ui/textarea';
 import { studentCreateSchema, StudentCreate } from '@/server/api/requests/student';
@@ -73,7 +69,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
   };
 
   const onError = (error: any) => {
-    console.error("Form submission error:", error);
+    console.error('Form submission error:', error);
     setIsSubmitting(false);
   };
 
@@ -119,7 +115,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                 <TabsTrigger value="academic">Academic</TabsTrigger>
                 <TabsTrigger value="contact">Contact & Guardian</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="personal" className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
@@ -149,7 +145,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     )}
                   />
                 </div>
-                
+
                 <FormField
                   control={form.control}
                   name="displayName"
@@ -164,7 +160,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="gender"
@@ -178,7 +174,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="dateOfBirth"
@@ -189,17 +185,10 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                         <PopoverTrigger asChild>
                           <FormControl>
                             <Button
-                              variant={"outline"}
-                              className={cn(
-                                "w-full text-left font-normal",
-                                !field.value && "text-muted-foreground"
-                              )}
+                              variant={'outline'}
+                              className={cn('w-full text-left font-normal', !field.value && 'text-muted-foreground')}
                             >
-                              {field.value ? (
-                                format(field.value, "PPP")
-                              ) : (
-                                <span>Pick a date</span>
-                              )}
+                              {field.value ? format(field.value, 'PPP') : <span>Pick a date</span>}
                               <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                             </Button>
                           </FormControl>
@@ -209,9 +198,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                             mode="single"
                             selected={field.value ?? undefined}
                             onSelect={field.onChange}
-                            disabled={(date) =>
-                              date > new Date() || date < new Date("1900-01-01")
-                            }
+                            disabled={(date) => date > new Date() || date < new Date('1900-01-01')}
                             initialFocus
                           />
                         </PopoverContent>
@@ -220,7 +207,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
@@ -235,7 +222,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                       </FormItem>
                     )}
                   />
-                  
+
                   <FormField
                     control={form.control}
                     name="nationality"
@@ -251,7 +238,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                   />
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="academic" className="space-y-4">
                 <FormField
                   control={form.control}
@@ -266,7 +253,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="batch"
@@ -274,8 +261,8 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     <FormItem>
                       <FormLabel>Batch (Year)</FormLabel>
                       <FormControl>
-                        <Input 
-                          type="number" 
+                        <Input
+                          type="number"
                           placeholder="Enter batch year"
                           min={1900}
                           {...field}
@@ -287,7 +274,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="email"
@@ -301,7 +288,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="phone"
@@ -316,7 +303,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                   )}
                 />
               </TabsContent>
-              
+
               <TabsContent value="contact" className="space-y-4">
                 <FormField
                   control={form.control}
@@ -325,17 +312,13 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     <FormItem>
                       <FormLabel>Current Address</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Enter current address" 
-                          {...field} 
-                          value={field.value || ''} 
-                        />
+                        <Textarea placeholder="Enter current address" {...field} value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <FormField
                   control={form.control}
                   name="permanentAddress"
@@ -343,20 +326,16 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                     <FormItem>
                       <FormLabel>Permanent Address</FormLabel>
                       <FormControl>
-                        <Textarea 
-                          placeholder="Enter permanent address" 
-                          {...field} 
-                          value={field.value || ''} 
-                        />
+                        <Textarea placeholder="Enter permanent address" {...field} value={field.value || ''} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                
+
                 <div className="border-t pt-4 mt-4">
                   <h3 className="text-lg font-medium mb-4">Guardian Information</h3>
-                  
+
                   <div className="grid grid-cols-2 gap-4">
                     <FormField
                       control={form.control}
@@ -371,7 +350,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="guardianRelationship"
@@ -386,7 +365,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                       )}
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-2 gap-4 mt-4">
                     <FormField
                       control={form.control}
@@ -401,7 +380,7 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                         </FormItem>
                       )}
                     />
-                    
+
                     <FormField
                       control={form.control}
                       name="guardianEmail"
@@ -409,11 +388,11 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
                         <FormItem>
                           <FormLabel>Guardian Email</FormLabel>
                           <FormControl>
-                            <Input 
-                              type="email" 
-                              placeholder="Enter guardian email" 
-                              {...field} 
-                              value={field.value || ''} 
+                            <Input
+                              type="email"
+                              placeholder="Enter guardian email"
+                              {...field}
+                              value={field.value || ''}
                             />
                           </FormControl>
                           <FormMessage />

@@ -70,7 +70,9 @@ export default function StudentCard({ student, id }: StudentCardProps) {
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
             <div>
-              <CardTitle className="text-xl font-bold">{student.displayName || `${student.firstName} ${student.lastName}`}</CardTitle>
+              <CardTitle className="text-xl font-bold">
+                {student.displayName || `${student.firstName} ${student.lastName}`}
+              </CardTitle>
               <CardDescription className="mt-1 flex items-center gap-1">
                 <Mail className="h-4 w-4" />
                 {student.email}
@@ -98,9 +100,7 @@ export default function StudentCard({ student, id }: StudentCardProps) {
                 {student.phone}
               </Badge>
             )}
-            {student.nationality && (
-              <Badge variant="outline">{student.nationality}</Badge>
-            )}
+            {student.nationality && <Badge variant="outline">{student.nationality}</Badge>}
           </div>
         </CardHeader>
 

@@ -48,10 +48,8 @@ export async function seedAttendances(config: SeedAttendancesConfig) {
 
   for (const courseId of courseIds) {
     const courseDaysList = courseDays.get(courseId) || [1, 3];
-    
-    const courseDates = dates.filter(date => 
-      courseDaysList.includes(date.getDay())
-    );
+
+    const courseDates = dates.filter((date) => courseDaysList.includes(date.getDay()));
 
     for (const studentId of studentIds) {
       const attendanceRecords = [];
@@ -60,7 +58,7 @@ export async function seedAttendances(config: SeedAttendancesConfig) {
         if (faker.number.int(100) < attendanceRate) {
           const rand = faker.number.int(100);
           let status;
-          
+
           if (rand < 85) status = 'present';
           else if (rand < 90) status = 'late';
           else if (rand < 95) status = 'excused';
@@ -78,15 +76,12 @@ export async function seedAttendances(config: SeedAttendancesConfig) {
       }
 
       if (attendanceRecords.length > 0) {
-        const inserted = await db
-          .insert(attendances)
-          .values(attendanceRecords)
-          .returning();
-        
+        const inserted = await db.insert(attendances).values(attendanceRecords).returning();
+
         totalInserted += inserted.length;
       }
     }
-    
+
     console.log(`Inserted attendance records for course ${courseId}...`);
   }
 

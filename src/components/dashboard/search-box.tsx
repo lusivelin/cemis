@@ -19,16 +19,16 @@ export function SearchBox({ placeholder = 'Search...', defaultValue = '' }: Sear
 
   const handleSearch = () => {
     const params = new URLSearchParams(window.location.search);
-    
+
     if (searchTerm) {
       params.set('search', searchTerm);
     } else {
       params.delete('search');
     }
-    
+
     // Reset to page 1 when searching
     params.set('page', '1');
-    
+
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });
@@ -39,7 +39,7 @@ export function SearchBox({ placeholder = 'Search...', defaultValue = '' }: Sear
     const params = new URLSearchParams(window.location.search);
     params.delete('search');
     params.set('page', '1');
-    
+
     startTransition(() => {
       router.push(`${pathname}?${params.toString()}`);
     });
@@ -75,12 +75,7 @@ export function SearchBox({ placeholder = 'Search...', defaultValue = '' }: Sear
           </Button>
         )}
       </div>
-      <Button 
-        className="ml-2" 
-        size="sm"
-        onClick={handleSearch}
-        disabled={isPending}
-      >
+      <Button className="ml-2" size="sm" onClick={handleSearch} disabled={isPending}>
         Search
       </Button>
     </div>
