@@ -4,6 +4,7 @@ import { GeistSans } from 'geist/font/sans';
 import type { Metadata } from 'next';
 
 import '@/styles/globals.css';
+import { Toaster } from '@/lib/components/ui/toaster';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: Props) {
       <body className={`${GeistSans.variable} antialiased`}>
         <TRPCReactProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+            <Toaster />
             {children}
           </ThemeProvider>
         </TRPCReactProvider>

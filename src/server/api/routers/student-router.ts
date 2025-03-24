@@ -115,7 +115,7 @@ export const studentRouter = createTRPCRouter({
         .insert(students)
         .values({
           ...input,
-          displayName,
+          userId: input.userId ?? '',
           createdAt: new Date(),
           updatedAt: new Date(),
         })
@@ -143,7 +143,7 @@ export const studentRouter = createTRPCRouter({
       try {
         const { id, body } = input;
 
-        let updateData = { ...body };
+        let updateData = { ...body, userId: body.userId ?? '' };
         if (body.firstName || body.lastName) {
           const currentStudent = await ctx.db
             .select()
@@ -186,21 +186,41 @@ export const studentRouter = createTRPCRouter({
 
   delete: protectedProcedure.input(z.object({ id: z.string() })).mutation(async ({ ctx, input }) => {
     try {
-      const result = await ctx.db
-        .delete(students)
+      const checkStudent = await ctx.db
+        .select({ id: students.id })
+        .from(students)
         .where(sql`${students.id} = ${input.id}`)
-        .returning();
+        .limit(1);
 
-      if (!result || result.length === 0) {
+      if (!checkStudent || checkStudent.length === 0) {
         throw new TRPCError({
           code: 'NOT_FOUND',
           message: 'Student not found',
         });
       }
 
+      const result = await ctx.db
+        .delete(students)
+        .where(sql`${students.id} = ${input.id}`)
+        .returning();
+
       return result[0];
     } catch (error) {
       console.error('Error deleting student:', error);
+
+      if (
+        error instanceof Error &&
+        (error.message.includes('foreign key constraint') ||
+          (error.cause && typeof error.cause === 'object' && 'code' in error.cause && error.cause.code === '23503'))
+      ) {
+        throw new TRPCError({
+          code: 'PRECONDITION_FAILED',
+          message:
+            'Cannot delete this student because they are enrolled in one or more courses. Please remove their enrollments first.',
+          cause: error,
+        });
+      }
+
       throw new TRPCError({
         code: 'INTERNAL_SERVER_ERROR',
         message: 'Failed to delete student',

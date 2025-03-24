@@ -2,7 +2,6 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import { api } from '@/trpc/react';
 import { Button } from '@/lib/components/ui/button';
@@ -27,6 +26,7 @@ import { cn } from '@/lib/utils';
 import { Textarea } from '@/lib/components/ui/textarea';
 import { studentCreateSchema, StudentCreate } from '@/server/api/requests/student';
 import { StudentDetailOutput } from '@/server/api/routers/student-router';
+import { useToast } from '@/lib/hooks/use-toast';
 
 interface StudentFormProps {
   initialData?: StudentDetailOutput;
@@ -37,6 +37,7 @@ interface StudentFormProps {
 export default function StudentForm({ initialData, id, onSuccess }: StudentFormProps) {
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<StudentCreate>({
     resolver: zodResolver(studentCreateSchema),
@@ -64,6 +65,13 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
 
   const invalidateOnSuccess = async () => {
     await apiUtils.students.invalidate();
+    setIsSubmitting(false);
+    toast({
+      title: id ? 'Student Updated' : 'Student Created',
+      description: id
+        ? 'Student information has been successfully updated.'
+        : 'New student has been successfully created.',
+    });
     onSuccess?.();
     router.refresh();
   };
@@ -71,9 +79,19 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
   const onError = (error: any) => {
     console.error('Form submission error:', error);
     setIsSubmitting(false);
+    toast({
+      title: 'Error',
+      description: error.message || 'An error occurred while saving the student information.',
+      variant: 'destructive',
+    });
   };
 
   const handleFormCancel = () => {
+    toast({
+      title: 'Action Cancelled',
+      description: 'No changes were saved.',
+      variant: 'default',
+    });
     if (!id) {
       router.back();
     } else {
@@ -93,6 +111,12 @@ export default function StudentForm({ initialData, id, onSuccess }: StudentFormP
 
   function onSubmit(data: StudentCreate) {
     setIsSubmitting(true);
+    toast({
+      title: 'Saving...',
+      description: 'Please wait while we save the student information.',
+      variant: 'default',
+    });
+
     if (id) {
       updateMutation.mutate({ id, body: data });
     } else {

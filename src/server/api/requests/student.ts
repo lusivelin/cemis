@@ -28,7 +28,7 @@ const studentBaseSchema = z.object({
   guardianEmail: z.string().email('Please enter a valid email address').nullish(),
   batch: z.number().int().min(1900, 'Batch year must be 1900 or later'),
   program: z.string().min(1, 'Program is required'),
-  authUserId: z.string().uuid().nullish(),
+  userId: z.string().uuid().nullish(),
 });
 
 const timestampFields = {

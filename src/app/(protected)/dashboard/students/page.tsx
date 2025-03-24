@@ -104,11 +104,6 @@ export default async function StudentsPage({ searchParams }: { searchParams: { p
                         <Eye className="h-4 w-4" />
                       </Button>
                     </Link>
-                    <Link href={`/dashboard/students/${student.id}`}>
-                      <Button variant="outline" size="icon" title="Edit">
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    </Link>
                   </div>
                 </TableCell>
               </TableRow>
