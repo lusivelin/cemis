@@ -28,7 +28,17 @@ import {
 } from '@/lib/components/ui/sidebar';
 import { signOut } from '@/server/auth/actions';
 import type { User } from '@supabase/supabase-js';
-import { ChevronRight, ChevronsUpDown, Home, ListOrdered, LogOut, Star, User as UserIcon, Users } from 'lucide-react';
+import {
+  BookDashed,
+  ChevronRight,
+  ChevronsUpDown,
+  Home,
+  ListOrdered,
+  LogOut,
+  Star,
+  User as UserIcon,
+  Users,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -52,6 +62,18 @@ export default function AppSidebar({ user }: Props) {
           title: 'All Students',
           url: '/students',
           icon: Users,
+        },
+      ],
+    },
+    {
+      title: 'Courses',
+      url: '/courses',
+      icon: Star,
+      children: [
+        {
+          title: 'All Courses',
+          url: '/courses',
+          icon: BookDashed,
         },
       ],
     },
