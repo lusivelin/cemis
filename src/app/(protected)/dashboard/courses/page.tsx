@@ -6,7 +6,7 @@ import { Button } from '@/lib/components/ui/button';
 import { BookOpen, Eye, Pencil, Plus, Search, Download } from 'lucide-react';
 import { PaginationSection } from '@/components/dashboard/pagination';
 import { SearchBox } from '@/components/dashboard/search-box';
-import { formatTeacherName } from '@/server/api/routers/course-router';
+import { formatTeacherName } from '@/utils/local/format-teacher-name';
 
 export default async function CoursesPage({ searchParams }: { searchParams: { page?: string; search?: string } }) {
   const { page, search } = await searchParams;
