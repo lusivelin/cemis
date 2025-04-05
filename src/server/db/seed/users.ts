@@ -19,7 +19,7 @@ const supabaseAdmin = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, proces
 export async function seedUsers(config: SeedUsersConfig = {}) {
   console.log('👥 Seeding users with Supabase Auth integration...');
 
-  const { adminCount = 3, teacherCount = 5, studentCount = 10 } = config;
+  const { adminCount = 1, teacherCount = 2, studentCount = 5 } = config;
 
   // Create admin users
   const adminUsers = await createRoleUsers('admin', adminCount);
@@ -48,7 +48,7 @@ async function createRoleUsers(role: 'admin' | 'teacher' | 'student', count: num
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const email = faker.internet.email({ firstName, lastName }).toLowerCase();
-    const password = faker.internet.password({ length: 12, memorable: true });
+    const password = '12345';
 
     const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
       email,

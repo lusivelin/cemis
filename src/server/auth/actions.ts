@@ -22,7 +22,7 @@ export async function login(formData: FormData) {
   redirect('/dashboard');
 }
 
-export async function signup(formData: FormData) {
+export async function signUp(formData: FormData) {
   const supabase = await createClient();
 
   const data = {
